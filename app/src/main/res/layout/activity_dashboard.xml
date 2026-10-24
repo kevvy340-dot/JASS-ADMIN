@@ -40,6 +40,48 @@
 
         <TextView android:id="@+id/tvTotal"
             android:layout_width="0dp" android:layout_height="wrap_content"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0D0D0D">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="#1A1A1A">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="JASS Admin"
+            android:textSize="20sp"
+            android:textColor="#FF4444"/>
+
+        <ImageButton
+            android:id="@+id/btnRefresh"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_popup_sync"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="#111111">
+
+        <TextView android:id="@+id/tvTotal"
+            android:layout_width="0dp" android:layout_height="wrap_content"
             android:layout_weight="1" android:textColor="#AAAAAA"
             android:textSize="12sp" android:gravity="center"/>
 
@@ -70,6 +112,44 @@
         <Spinner android:id="@+id/spinnerFilter"
             android:layout_width="0dp"
             android:layout_height="40dp"
+            android:layout_weight="1"/>
+
+        <Button android:id="@+id/btnGenerate"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="+ Generate"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF4444"
+            android:layout_marginStart="12dp"/>
+
+    </LinearLayout>
+
+    <ProgressBar android:id="@+id/progressDash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Koi key nahi"
+        android:textColor="#555555"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerKeys"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>
+   android:layout_height="40dp"
             android:layout_weight="1"/>
 
         <Button android:id="@+id/btnGenerate"
