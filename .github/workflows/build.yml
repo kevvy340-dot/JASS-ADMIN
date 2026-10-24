@@ -1,4 +1,4 @@
-nname: Build JASS Admin APK
+name: Build JASS Admin APK
 
 on:
   push:
