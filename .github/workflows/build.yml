@@ -1,4 +1,4 @@
-name: Build JASS Admin APK
+nname: Build JASS Admin APK
 
 on:
   push:
@@ -21,14 +21,13 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Make gradlew executable
-        run: chmod +x JASS-ADMIN/gradlew
+        run: chmod +x gradlew
 
       - name: Build Debug APK
-        working-directory: JASS-ADMIN
         run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: JASS-Admin-APK
-          path: JASS-ADMIN/app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
