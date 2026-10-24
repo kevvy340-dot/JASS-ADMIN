@@ -20,12 +20,12 @@ class KeysAdapter(
 ) : RecyclerView.Adapter<KeysAdapter.VH>() {
 
     inner class VH(v: View) : RecyclerView.ViewHolder(v) {
-        val tvKey:      TextView = v.findViewById(R.id.tvKey)
-        val tvExpiry:   TextView = v.findViewById(R.id.tvExpiry)
-        val tvDevice:   TextView = v.findViewById(R.id.tvDevice)
-        val tvStatus:   TextView = v.findViewById(R.id.tvStatus)
-        val btnRevoke:  Button   = v.findViewById(R.id.btnRevoke)
-        val btnCopy:    Button   = v.findViewById(R.id.btnCopy)
+        val tvKey:     TextView = v.findViewById(R.id.tvKey)
+        val tvExpiry:  TextView = v.findViewById(R.id.tvExpiry)
+        val tvDevice:  TextView = v.findViewById(R.id.tvDevice)
+        val tvStatus:  TextView = v.findViewById(R.id.tvStatus)
+        val btnRevoke: Button   = v.findViewById(R.id.btnRevoke)
+        val btnCopy:   Button   = v.findViewById(R.id.btnCopy)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -38,7 +38,6 @@ class KeysAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val k = keys[position]
-
         holder.tvKey.text    = k.key
         holder.tvExpiry.text = "Expiry: ${k.expiry.take(10)}"
         holder.tvDevice.text = if (k.deviceId.isNullOrEmpty())
@@ -47,19 +46,16 @@ class KeysAdapter(
             "Device: ${k.deviceId.take(16)}..."
 
         if (k.expired) {
-            holder.tvStatus.text      = "EXPIRED"
+            holder.tvStatus.text = "EXPIRED"
             holder.tvStatus.setTextColor(Color.parseColor("#FF4444"))
             holder.btnRevoke.isEnabled = false
         } else {
-            holder.tvStatus.text      = "ACTIVE"
+            holder.tvStatus.text = "ACTIVE"
             holder.tvStatus.setTextColor(Color.parseColor("#44FF88"))
             holder.btnRevoke.isEnabled = true
         }
 
-        holder.btnRevoke.setOnClickListener {
-            onRevoke(k.key, holder.adapterPosition)
-        }
-
+        holder.btnRevoke.setOnClickListener { onRevoke(k.key, holder.adapterPosition) }
         holder.btnCopy.setOnClickListener {
             val cm = holder.itemView.context
                 .getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -76,7 +72,6 @@ class KeysAdapter(
     fun updateList(newKeys: List<AdminClient.KeyInfo>) {
         keys.clear()
         keys.addAll(newKeys)
-        notifyDataSetChang
-      ed()
+        notifyDataSetChanged()
     }
 }
