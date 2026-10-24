@@ -17,31 +17,63 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Download Gradle wrapper jar
+      - name: Download gradle-wrapper.jar
         run: |
           mkdir -p gradle/wrapper
-          curl -L -o gradle/wrapper/gradle-wrapper.jar \
+          curl -fsSL -o gradle/wrapper/gradle-wrapper.jar \
             https://github.com/gradle/gradle/raw/v8.0.0/gradle/wrapper/gradle-wrapper.jar
 
-      - name: Fix gradlew
+      - name: Write gradlew
         run: |
-          cat > gradlew << 'EOF'
-          #!/bin/sh
-          APP_HOME=$(pwd)
-          exec java -classpath "$APP_HOME/gradle/wrapper/gradle-wrapper.jar" \
-            org.gradle.wrapper.GradleWrapperMain "$@"
-          EOF
+          printf '#!/bin/sh\nAPP_HOME=$(pwd)\nCLASSPATH="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"\nexec java -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"\n' > gradlew
           chmod +x gradlew
 
-      - name: Update wrapper properties
+      - name: Generate missing layout files
         run: |
-          cat > gradle/wrapper/gradle-wrapper.properties << 'EOF'
-          distributionBase=GRADLE_USER_HOME
-          distributionPath=wrapper/dists
-          distributionUrl=https\://services.gradle.org/distributions/gradle-8.0-bin.zip
-          zipStoreBase=GRADLE_USER_HOME
-          zipStorePath=wrapper/dists
-          EOF
+          cat > app/src/main/res/layout/activity_dashboard.xml << 'XMLEOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="#0D0D0D">
+              <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="16dp" android:background="#1A1A1A">
+                  <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="JASS Admin" android:textSize="20sp" android:textColor="#FF4444"/>
+                  <ImageButton android:id="@+id/btnRefresh" android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_popup_sync" android:background="?attr/selectableItemBackgroundBorderless" android:tint="#FFFFFF"/>
+              </LinearLayout>
+              <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="12dp" android:background="#111111">
+                  <TextView android:id="@+id/tvTotal" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#AAAAAA" android:textSize="12sp" android:gravity="center"/>
+                  <TextView android:id="@+id/tvActive" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#44FF88" android:textSize="12sp" android:gravity="center"/>
+                  <TextView android:id="@+id/tvExpired" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#FF4444" android:textSize="12sp" android:gravity="center"/>
+                  <TextView android:id="@+id/tvBound" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#4488FF" android:textSize="12sp" android:gravity="center"/>
+              </LinearLayout>
+              <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="12dp">
+                  <Spinner android:id="@+id/spinnerFilter" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1"/>
+                  <Button android:id="@+id/btnGenerate" android:layout_width="wrap_content" android:layout_height="40dp" android:text="+ Generate" android:textColor="#FFFFFF" android:backgroundTint="#FF4444" android:layout_marginStart="12dp"/>
+              </LinearLayout>
+              <ProgressBar android:id="@+id/progressDash" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" android:layout_gravity="center_horizontal"/>
+              <TextView android:id="@+id/tvEmpty" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Koi key nahi" android:textColor="#555555" android:textSize="14sp" android:gravity="center" android:padding="32dp" android:visibility="gone"/>
+              <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerKeys" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:padding="8dp" android:clipToPadding="false"/>
+          </LinearLayout>
+          XMLEOF
+
+          cat > app/src/main/res/layout/activity_admin_login.xml << 'XMLEOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:gravity="center"
+              android:padding="32dp"
+              android:background="#0D0D0D">
+              <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="JASS Admin" android:textSize="28sp" android:textStyle="bold" android:textColor="#FF4444" android:layout_marginBottom="32dp"/>
+              <EditText android:id="@+id/etServer" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Server URL" android:textColor="#FFFFFF" android:textColorHint="#555555" android:inputType="textUri" android:padding="14dp" android:layout_marginBottom="16dp"/>
+              <EditText android:id="@+id/etPassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Admin Password" android:textColor="#FFFFFF" android:textColorHint="#555555" android:inputType="textPassword" android:padding="14dp" android:layout_marginBottom="24dp"/>
+              <ProgressBar android:id="@+id/progressAdmin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" android:layout_marginBottom="16dp"/>
+              <Button android:id="@+id/btnAdminLogin" android:layout_width="match_parent" android:layout_height="52dp" android:text="LOGIN" android:textColor="#FFFFFF" android:backgroundTint="#FF4444" android:textStyle="bold"/>
+              <TextView android:id="@+id/tvAdminError" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#FF4444" android:textSize="14sp" android:gravity="center" android:layout_marginTop="16dp" android:visibility="gone"/>
+          </LinearLayout>
+          XMLEOF
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
