@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace 'com.jass.admin'
     compileSdkVersion 34
     defaultConfig {
         applicationId "com.jass.admin"
